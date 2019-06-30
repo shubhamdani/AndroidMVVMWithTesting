@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class TodoApplication : Application() {
 
     companion object {
-        lateinit var NETWORK_SERVICE: NetWorkService
+         var NETWORK_SERVICE: NetWorkService? = null
     }
 
 

@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         mTodoNotesViewModel = ViewModelProviders.of(this).get(TodoNotesViewModel::class.java)
 
-        mTodoNotesViewModel.getTodoDataFromStorage()
+//        mTodoNotesViewModel.getTodoDataFromStorage()
     }
 
 }

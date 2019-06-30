@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.shubhamdani.todonotes.R
 import com.shubhamdani.todonotes.model.TodoModel
@@ -16,7 +17,7 @@ import com.shubhamdani.todonotes.view.adapter.AllTodosAdapter
 import com.shubhamdani.todonotes.viewmodel.TodoNotesViewModel
 import kotlinx.android.synthetic.main.home_fragment.*
 
-class HomeFragment : Fragment(), View.OnClickListener, Observer<List<TodoModel>> {
+class HomeFragment : Fragment(), View.OnClickListener, Observer<PagedList<TodoModel>> {
 
     private lateinit var mTodoNotesViewModel: TodoNotesViewModel
 
@@ -34,14 +35,13 @@ class HomeFragment : Fragment(), View.OnClickListener, Observer<List<TodoModel>>
         mTodoNotesViewModel.getTodoLiveData().observe(this, this)
 
 
-        rv_all_todo.adapter = AllTodosAdapter(mTodoNotesViewModel.getTodoLiveData().value)
+        rv_all_todo.adapter = AllTodosAdapter()
         rv_all_todo.layoutManager = LinearLayoutManager(activity)
         fab_add_todo.setOnClickListener(this)
     }
 
-    override fun onChanged(t: List<TodoModel>) {
-        rv_all_todo.adapter = AllTodosAdapter(t)
-        (rv_all_todo.adapter as AllTodosAdapter).notifyDataSetChanged()
+    override fun onChanged(t: PagedList<TodoModel>) {
+        (rv_all_todo.adapter as AllTodosAdapter).submitList(t)
     }
 
     override fun onClick(v: View?) {
@@ -50,10 +50,6 @@ class HomeFragment : Fragment(), View.OnClickListener, Observer<List<TodoModel>>
          */
         val actionHomeFragmentToAddTodoFragment =
                 HomeFragmentDirections.actionHomeFragmentToAddTodoFragment()
-
-        actionHomeFragmentToAddTodoFragment.setTitle("Wow!!!")
-        actionHomeFragmentToAddTodoFragment.setDescription(" Description")
-        actionHomeFragmentToAddTodoFragment.setHeading("Heading")
 
         NavHostFragment.findNavController(this)
                 .navigate(actionHomeFragmentToAddTodoFragment)
