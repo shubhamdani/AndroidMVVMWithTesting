@@ -29,7 +29,7 @@ object DemoTest : Spek({
     }
 
     test("get Data from storage") {
-        todoVm.getTodoDataFromStorage()
+//        todoVm.getTodoDataFromStorage()
         verify(mRepo).getAllTodoNotes(mock(getTodoListener::class.java))
     }
 })

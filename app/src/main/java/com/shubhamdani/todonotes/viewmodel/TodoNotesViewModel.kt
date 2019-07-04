@@ -37,7 +37,7 @@ open class TodoNotesViewModel(private val mRepo: RepoContract = TodoNotesReposit
     }
 
     override fun onSaveTodoFail() {
-
+        listener.onTodoAddFailure()
     }
 
     override fun onSaveTodoSuccess(todoModel: TodoModel) {
@@ -51,4 +51,5 @@ open class TodoNotesViewModel(private val mRepo: RepoContract = TodoNotesReposit
 
 interface AddTodoListener {
     fun onTodoAdded()
+    fun onTodoAddFailure()
 }

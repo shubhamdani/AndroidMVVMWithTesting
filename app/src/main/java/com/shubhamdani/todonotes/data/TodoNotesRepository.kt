@@ -2,6 +2,7 @@ package com.shubhamdani.todonotes.data
 
 import android.util.Log
 import com.shubhamdani.todonotes.data.services.NetWorkService
+import com.shubhamdani.todonotes.model.AllTodoResponceModel
 import com.shubhamdani.todonotes.model.SavedTodoResponseModel
 import com.shubhamdani.todonotes.model.TodoModel
 import kotlinx.coroutines.*
@@ -12,7 +13,8 @@ import kotlin.coroutines.CoroutineContext
 
 
 open class TodoNotesRepository(
-    private val service: NetWorkService?) : CoroutineScope, RepoContract {
+    private val service: NetWorkService?
+) : CoroutineScope, RepoContract {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + SupervisorJob()
@@ -21,16 +23,24 @@ open class TodoNotesRepository(
 
     override fun getAllTodoNotes(listener: getTodoListener) {
         launch {
-            val execute = service?.getAllTodoNotes()?.execute()
-            withContext(resultContext) {
-                when (execute?.isSuccessful) {
-                    true -> {
-                        listener.onGetTodoSuccess(execute.body().responseModel as ArrayList<TodoModel>)
-                    }
-                    else -> {
-                        listener.onGetTodoFail()
+            val execute: Response<AllTodoResponceModel>?
+
+            try {
+                execute = service?.getAllTodoNotes()?.execute()
+
+                withContext(resultContext) {
+                    when (execute?.isSuccessful) {
+                        true -> {
+                            listener.onGetTodoSuccess(execute.body().responseModel as ArrayList<TodoModel>)
+                        }
+                        else -> {
+                            listener.onGetTodoFail()
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                Log.d("API Exception", e.message)
+                listener.onGetTodoFail()
             }
         }
     }
@@ -43,7 +53,10 @@ open class TodoNotesRepository(
                 listener.onSaveTodoFail()
             }
 
-            override fun onResponse(call: Call<SavedTodoResponseModel>?, response: Response<SavedTodoResponseModel>?) {
+            override fun onResponse(
+                call: Call<SavedTodoResponseModel>?,
+                response: Response<SavedTodoResponseModel>?
+            ) {
                 Log.d("onResponse", response?.body()?.responseModel.toString())
                 listener.onSaveTodoSuccess(todoModel)
             }
